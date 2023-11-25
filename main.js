@@ -478,9 +478,7 @@ removeCycles(0);
 removeUnreachablesFrom(0);
 cleanlyPlace(0);
 
-// setTimeout(async () => {
-//        await BFSVisual(0); 
-// }, 1000);
+BFSVisual(0);
 
 
 // ---------------------------------
