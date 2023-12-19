@@ -102,6 +102,9 @@ class Ball {
                 // bfs
                 this.visited = false;
                 this.level = -1;
+                // dfs 
+                this.startingTime = -1;
+                this.finishingTime = -1;
         }
 
         removeNeighbourColor(n) {
@@ -458,7 +461,7 @@ const ballsReindex = () => {
 }
 
 // create balls
-let numberOfBalls = 50;
+let numberOfBalls = 25;
 for (let i = 0; i < numberOfBalls; ++i) {
         makeBall(randomCoord(canvas.width), randomCoord(canvas.height), [])
 }
@@ -474,11 +477,84 @@ for (let i = 0; i < Object.keys(balls).length; ++i) {
         }
 }
 
+
+
+// we will now run DFS and keep track of starting and finishing time
+const DFS = (s = 0, delta = 0) => {
+        // from this ball we explore all of it's neighbours
+        const cur = getBall(s);
+        cur.startingTime = delta;
+        ++delta;
+        for (let i = 0; i < cur.N.length; ++i) {
+                let neighbour = cur.N[i]
+                if (!neighbour.visited) {
+                        neighbour.visited = true;
+                        neighbour.P.push(cur);
+                        delta = DFS(neighbour.id, delta);
+                }
+        }
+        cur.finishingTime = delta;
+        ++delta;
+
+        return delta;
+}
+
+
+
+
+const topicgraphicallySort = async (s = 0) => {
+        DFS(0);
+
+        let sortableBalls = [];
+        for (let i = 0; i < Ball.ballCount; ++i) {
+                sortableBalls.push(getBall(i));
+        }
+
+        sortableBalls.sort((a, b) => b.finishingTime - a.finishingTime);
+
+        let newBalls = {};
+        for (let i = 0; i < sortableBalls.length; ++i) {
+                const ball = sortableBalls[i];
+         
+                await new Promise((resolve) => {
+                        setTimeout(() => {
+                                ball.x = i * (canvas.width / RADIUS) + RADIUS;
+                                ball.y = canvas.height / 2 + (1 - ball.N.length) * RADIUS * 3;
+                                ball.id = i;
+                                newBalls[ball.id] = ball;
+
+                                resolve(); 
+                        }, 100);
+                })
+        }
+
+        balls = newBalls;
+
+        ballsApply((ball) => {
+                ball.visited = false;
+                ball.startingTime = -1;
+                ball.finishingTime = -1;
+        });
+
+        for (let i = 0; i < Ball.ballCount; ++i) {
+                console.log(getBall(i).id, getBall(i).N.map((ball) => ball.id));
+        }
+        
+}
+
 removeCycles(0);
 removeUnreachablesFrom(0);
-cleanlyPlace(0);
 
-BFSVisual(0);
+topicgraphicallySort(0); 
+
+
+
+
+
+
+// cleanlyPlace(0);
+
+// BFSVisual(0);
 
 
 // ---------------------------------
