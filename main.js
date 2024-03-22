@@ -15,6 +15,7 @@ window.addEventListener("resize", () => {
         window.location.reload();
 })
 
+
 /** @type {CanvasRenderingContext2D} */
 const context = canvas.getContext('2d');
 context.textBaseline = "middle";
