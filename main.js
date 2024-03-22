@@ -29,6 +29,7 @@ function drawArrow(fromx, fromy, tox, toy, color = "red") {
         var dx = tox - fromx;
         var dy = toy - fromy;
         var angle = Math.atan2(dy, dx);
+        
         context.beginPath();
         context.strokeStyle = color;
         context.lineWidth = 3;
@@ -199,7 +200,7 @@ class Ball {
                                 board[this.gridIX][this.gridIY].push(this);
                         } else {
                                 console.log(this)
-                                throw "shit we broke something"
+                                throw "Something is broken"
                         }
                 }
         }
